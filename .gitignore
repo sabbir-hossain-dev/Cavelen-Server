@@ -34,7 +34,7 @@ yarn-error.log*
 .env*
 
 # local env files should not be committed
-.env.local
+.env
 
 # vercel
 .vercel
