@@ -1,0 +1,16 @@
+import { betterAuth } from "better-auth";
+import Database from "better-sqlite3";
+
+const database = new Database("auth.db");
+
+export const auth = betterAuth({
+  database: database,
+  baseURL: "http://localhost:3000/",
+  emailAndPassword: { enabled: true },
+  socialProviders: {
+    apple: {
+      clientId: process.env.APPLE_CLIENT_ID!,
+      clientSecret: process.env.APPLE_CLIENT_SECRET!,
+    },
+  },
+});

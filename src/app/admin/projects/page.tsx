@@ -2,12 +2,14 @@
 
 import { useState } from "react";
 import { Plus, Search, Edit2, Trash2, ExternalLink, Code, Filter, X } from "lucide-react";
+import ImageUpload from "@/app/admin/components/ImageUpload";
 
 export default function ProjectsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  
+  const [imageUrl, setImageUrl] = useState("");
 
-  // ডামি ডাটা (পরে API থেকে আসবে)
   const [projects, setProjects] = useState([
     {
       _id: "1",
@@ -140,6 +142,15 @@ export default function ProjectsPage() {
                     <option>Mobile App</option>
                   </select>
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-300">Project Thumbnail</label>
+                <ImageUpload 
+                  value={imageUrl} 
+                  onChange={(url) => setImageUrl(url)} 
+                  onRemove={() => setImageUrl("")} 
+                />
               </div>
 
               <div className="space-y-2">
