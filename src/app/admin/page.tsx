@@ -27,7 +27,6 @@ const recentActivity = [
   { id: 3, log: "Cavelen Dashboard viewed", time: "5 hours ago" },
 ];
 
-// 1. Variants গুলোতে টাইপ অ্যাড করা হয়েছে
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
   show: {
@@ -42,7 +41,7 @@ const itemVariants: Variants = {
 };
 
 export default function AdminDashboard() {
-  return
+  return (
     <motion.div 
       variants={containerVariants} 
       initial="hidden" 
@@ -63,13 +62,10 @@ export default function AdminDashboard() {
         <StatCard title="Total Projects" value="12" icon={<FolderKanban className="w-5 h-5" />} trend="+2" color="purple" />
       </div>
 
-      {/* BENTO GRID: MAIN CHARTS & LISTS */}
+      {/* BENTO GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
-        {/* TRAFFIC GRAPH */}
         <motion.div variants={itemVariants} className="lg:col-span-2 glass-card p-6 relative overflow-hidden group">
           <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#06B6D4]/10 rounded-full blur-3xl group-hover:bg-[#06B6D4]/20 transition-all duration-700"></div>
-          
           <h2 className="text-lg font-bold text-white mb-6">Traffic Overview</h2>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -93,9 +89,7 @@ export default function AdminDashboard() {
           </div>
         </motion.div>
 
-        {/* RIGHT COLUMN: LISTS */}
         <div className="space-y-6">
-          {/* TOP PROJECTS */}
           <motion.div variants={itemVariants} className="glass-card p-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-32 h-32 bg-[#8B5CF6]/10 rounded-full blur-3xl"></div>
             <h2 className="text-lg font-bold text-white mb-5">Most Viewed Projects</h2>
@@ -114,29 +108,26 @@ export default function AdminDashboard() {
             </div>
           </motion.div>
 
-          {/* RECENT ACTIVITY */}
           <motion.div variants={itemVariants} className="glass-card p-6">
             <h2 className="text-lg font-bold text-white mb-5">Recent Activity</h2>
-            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
+            <div className="space-y-4">
               {recentActivity.map((activity) => (
-                <div key={activity.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
-                  <div className="flex items-center justify-center w-4 h-4 rounded-full border border-[#06B6D4] bg-[#020617] group-hover:bg-[#06B6D4] text-slate-500 group-hover:text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 transition-colors"></div>
-                  <div className="w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] glass-card p-3 rounded-xl ml-4 md:ml-0 group-hover:border-[#06B6D4]/30 transition-colors">
+                <div key={activity.id} className="relative flex items-center gap-4">
+                  <div className="w-2 h-2 rounded-full bg-[#06B6D4]"></div>
+                  <div className="glass-card p-3 rounded-xl flex-1">
                     <p className="text-sm text-gray-300">{activity.log}</p>
-                    <time className="text-xs text-gray-500 mt-1 block">{activity.time}</time>
+                    <time className="text-xs text-gray-500">{activity.time}</time>
                   </div>
                 </div>
               ))}
             </div>
           </motion.div>
         </div>
-
       </div>
     </motion.div>
-  
+  );
 }
 
-// 2. StatCard-এর প্রপস টাইপ ঠিক করা হয়েছে এবং itemVariants পাস করা হয়েছে
 interface StatCardProps {
   title: string;
   value: string;
@@ -147,12 +138,9 @@ interface StatCardProps {
 
 function StatCard({ title, value, icon, trend, color }: StatCardProps) {
   const isCyan = color === "cyan";
-  
   return (
     <motion.div variants={itemVariants} className="glass-card p-6 relative overflow-hidden group">
-      {/* Glow Effect */}
       <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 ${isCyan ? 'bg-[#06B6D4]' : 'bg-[#8B5CF6]'}`}></div>
-      
       <div className="flex justify-between items-start mb-4">
         <div className={`p-3 rounded-xl bg-white/5 ${isCyan ? 'text-[#06B6D4]' : 'text-[#8B5CF6]'}`}>
           {icon}
@@ -161,7 +149,6 @@ function StatCard({ title, value, icon, trend, color }: StatCardProps) {
           {trend} <ArrowUpRight className="w-3 h-3" />
         </span>
       </div>
-      
       <div>
         <h3 className="text-3xl font-bold text-white mb-1">{value}</h3>
         <p className="text-sm text-gray-400 font-medium">{title}</p>
