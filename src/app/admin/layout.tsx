@@ -1,11 +1,16 @@
+"use client"; // পেজের লোকেশন ট্র্যাক করার জন্য এটা লাগবে
+
 import { 
   LayoutDashboard, FolderKanban, Code2, Briefcase, 
   GraduationCap, Award, MessageSquare, Settings, 
   LogOut, Search, Bell, SunMoon 
 } from 'lucide-react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname(); // বর্তমান পেজের লিংক বের করার হুক
+
   return (
     <div className="flex h-screen bg-[#020617] text-[#F8FAFC] overflow-hidden selection:bg-[#06B6D4] selection:text-white">
       
@@ -18,17 +23,18 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </div>
 
         <nav className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-2 custom-scrollbar">
-          <SidebarItem icon={<LayoutDashboard />} label="Dashboard" active />
-          <SidebarItem icon={<FolderKanban />} label="Projects" />
-          <SidebarItem icon={<Code2 />} label="Skills" />
-          <SidebarItem icon={<Briefcase />} label="Experience" />
-          <SidebarItem icon={<GraduationCap />} label="Education" />
-          <SidebarItem icon={<Award />} label="Certifications" />
-          <SidebarItem icon={<MessageSquare />} label="Messages" />
+          {/* এখানে href যোগ করা হয়েছে এবং active স্টেট ডাইনামিক করা হয়েছে */}
+          <SidebarItem href="/admin" icon={<LayoutDashboard />} label="Dashboard" active={pathname === '/admin'} />
+          <SidebarItem href="/admin/projects" icon={<FolderKanban />} label="Projects" active={pathname.startsWith('/admin/projects')} />
+          <SidebarItem href="/admin/skills" icon={<Code2 />} label="Skills" active={pathname.startsWith('/admin/skills')} />
+          <SidebarItem href="/admin/experience" icon={<Briefcase />} label="Experience" active={pathname.startsWith('/admin/experience')} />
+          <SidebarItem href="/admin/education" icon={<GraduationCap />} label="Education" active={pathname.startsWith('/admin/education')} />
+          <SidebarItem href="/admin/certifications" icon={<Award />} label="Certifications" active={pathname.startsWith('/admin/certifications')} />
+          <SidebarItem href="/admin/messages" icon={<MessageSquare />} label="Messages" active={pathname.startsWith('/admin/messages')} />
           
           <div className="mt-auto pt-4 border-t border-white/5 flex flex-col gap-2">
-            <SidebarItem icon={<Settings />} label="Settings" />
-            <SidebarItem icon={<LogOut />} label="Logout" isDanger />
+            <SidebarItem href="/admin/settings" icon={<Settings />} label="Settings" active={pathname.startsWith('/admin/settings')} />
+            <SidebarItem href="#" icon={<LogOut />} label="Logout" isDanger />
           </div>
         </nav>
       </aside>
@@ -63,7 +69,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
         {/* PAGE CONTENT (Smooth Scroll) */}
         <main className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-          {/* Smooth page transition wrapper can be added here using Framer Motion later if needed */}
           {children}
         </main>
 
@@ -72,10 +77,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   );
 }
 
-// Helper Component for Sidebar Links
-function SidebarItem({ icon, label, active = false, isDanger = false }: any) {
+// cyberpunk স্টাইলের সাইডবার আইটেম কম্পোনেন্ট
+function SidebarItem({ icon, label, href = "#", active = false, isDanger = false }: any) {
   return (
-    <Link href="#" className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
+    <Link href={href} className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-300 group
       ${active ? 'bg-[#06B6D4]/10 text-[#06B6D4] border border-[#06B6D4]/20' : 'text-gray-400 hover:text-white hover:bg-white/5'}
       ${isDanger ? 'hover:text-red-400 hover:bg-red-400/10' : ''}
     `}>
