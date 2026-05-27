@@ -1,74 +1,171 @@
-export default function DashboardPage() {
-  return (
-    <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-      
+"use client";
+
+import { motion, Variants } from "framer-motion";
+import { Users, Mail, FolderKanban, Activity, ArrowUpRight } from "lucide-react";
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+
+// ডামি চার্ট ডাটা
+const trafficData = [
+  { name: "Mon", visitors: 120 },
+  { name: "Tue", visitors: 250 },
+  { name: "Wed", visitors: 180 },
+  { name: "Thu", visitors: 300 },
+  { name: "Fri", visitors: 280 },
+  { name: "Sat", visitors: 420 },
+  { name: "Sun", visitors: 390 },
+];
+
+const topProjects = [
+  { id: 1, name: "Cavelen E-Commerce", views: "1.2k" },
+  { id: 2, name: "Luxury Booking App", views: "856" },
+  { id: 3, name: "Dark Theme UI Kit", views: "643" },
+];
+
+const recentActivity = [
+  { id: 1, log: "Sarah sent a new message", time: "2 hours ago" },
+  { id: 2, log: "New visitor from Paris", time: "4 hours ago" },
+  { id: 3, log: "Cavelen Dashboard viewed", time: "5 hours ago" },
+];
+
+// 1. Variants গুলোতে টাইপ অ্যাড করা হয়েছে
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 }
+  }
+};
+
+const itemVariants: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } }
+};
+
+export default function AdminDashboard() {
+  return
+    <motion.div 
+      variants={containerVariants} 
+      initial="hidden" 
+      animate="show" 
+      className="space-y-6"
+    >
       {/* HEADER */}
-      <div className="flex justify-between items-end mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-white mb-1">Dashboard Overview</h1>
-          <p className="text-gray-400 text-sm">Welcome back to the command center.</p>
-        </div>
+      <motion.div variants={itemVariants} className="mb-8">
+        <h1 className="text-3xl font-bold text-white mb-1">Overview</h1>
+        <p className="text-gray-400 text-sm">Welcome back! Here's what's happening with your portfolio today.</p>
+      </motion.div>
+
+      {/* TOP STATS CARDS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
+        <StatCard title="Total Visitors" value="12,450" icon={<Users className="w-5 h-5" />} trend="+15%" color="cyan" />
+        <StatCard title="Project Views" value="8,234" icon={<Activity className="w-5 h-5" />} trend="+8%" color="purple" />
+        <StatCard title="Messages" value="48" icon={<Mail className="w-5 h-5" />} trend="+12%" color="cyan" />
+        <StatCard title="Total Projects" value="12" icon={<FolderKanban className="w-5 h-5" />} trend="+2" color="purple" />
       </div>
 
-      {/* STATISTICS CARDS (Row 1 - 4 Columns) */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatCard title="Total Projects" value="24" trend="+2 this month" />
-        <StatCard title="Profile Views" value="12.4K" trend="+18% vs last month" isPositive />
-        <StatCard title="Messages" value="148" trend="3 unread" highlight />
-        <StatCard title="Uptime" value="99.9%" trend="All systems normal" />
-      </div>
-
-      {/* BENTO GRID (Row 2 - 3 Columns: Analytics + Activity) */}
+      {/* BENTO GRID: MAIN CHARTS & LISTS */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         
-        {/* Analytics Chart (Spans 2 columns) */}
-        <div className="lg:col-span-2 glass-card p-6 min-h-[400px] flex flex-col">
-          <h3 className="text-lg font-semibold text-white mb-6">Traffic Overview</h3>
-          <div className="flex-1 border border-dashed border-white/10 rounded-xl flex items-center justify-center text-gray-500">
-             [ Recharts / Chart.js Graph Component Goes Here ]
+        {/* TRAFFIC GRAPH */}
+        <motion.div variants={itemVariants} className="lg:col-span-2 glass-card p-6 relative overflow-hidden group">
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#06B6D4]/10 rounded-full blur-3xl group-hover:bg-[#06B6D4]/20 transition-all duration-700"></div>
+          
+          <h2 className="text-lg font-bold text-white mb-6">Traffic Overview</h2>
+          <div className="h-[300px] w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={trafficData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#06B6D4" stopOpacity={0.3}/>
+                    <stop offset="95%" stopColor="#06B6D4" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" vertical={false} />
+                <XAxis dataKey="name" stroke="#9CA3AF" fontSize={12} tickLine={false} axisLine={false} />
+                <YAxis stroke="#9CA3AF" fontSize={12} tickLine={false} axisLine={false} />
+                <Tooltip 
+                  contentStyle={{ backgroundColor: '#111827', borderColor: 'rgba(255,255,255,0.1)', borderRadius: '12px', color: '#fff' }}
+                  itemStyle={{ color: '#06B6D4' }}
+                />
+                <Area type="monotone" dataKey="visitors" stroke="#06B6D4" strokeWidth={3} fillOpacity={1} fill="url(#colorVisitors)" />
+              </AreaChart>
+            </ResponsiveContainer>
           </div>
-        </div>
+        </motion.div>
 
-        {/* Recent Activity (Spans 1 column) */}
-        <div className="glass-card p-6 min-h-[400px]">
-          <h3 className="text-lg font-semibold text-white mb-6">Recent Activity</h3>
-          <div className="space-y-6">
-            <ActivityRow action="New message from" subject="Google Recruiter" time="2 hours ago" />
-            <ActivityRow action="Project updated:" subject="Portfolio v2" time="5 hours ago" />
-            <ActivityRow action="Skill added:" subject="Next.js 14" time="1 day ago" />
-            <ActivityRow action="Settings changed" subject="Theme configurations" time="2 days ago" />
-          </div>
+        {/* RIGHT COLUMN: LISTS */}
+        <div className="space-y-6">
+          {/* TOP PROJECTS */}
+          <motion.div variants={itemVariants} className="glass-card p-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-32 h-32 bg-[#8B5CF6]/10 rounded-full blur-3xl"></div>
+            <h2 className="text-lg font-bold text-white mb-5">Most Viewed Projects</h2>
+            <div className="space-y-4">
+              {topProjects.map((project, index) => (
+                <div key={project.id} className="flex items-center justify-between group">
+                  <div className="flex items-center gap-3">
+                    <span className="text-gray-500 font-mono text-sm">0{index + 1}</span>
+                    <p className="text-sm font-medium text-gray-300 group-hover:text-white transition-colors">{project.name}</p>
+                  </div>
+                  <div className="flex items-center gap-1 text-[#8B5CF6]">
+                    <span className="text-sm font-semibold">{project.views}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* RECENT ACTIVITY */}
+          <motion.div variants={itemVariants} className="glass-card p-6">
+            <h2 className="text-lg font-bold text-white mb-5">Recent Activity</h2>
+            <div className="space-y-4 relative before:absolute before:inset-0 before:ml-2 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-white/10 before:to-transparent">
+              {recentActivity.map((activity) => (
+                <div key={activity.id} className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group is-active">
+                  <div className="flex items-center justify-center w-4 h-4 rounded-full border border-[#06B6D4] bg-[#020617] group-hover:bg-[#06B6D4] text-slate-500 group-hover:text-white shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 transition-colors"></div>
+                  <div className="w-[calc(100%-2rem)] md:w-[calc(50%-1.5rem)] glass-card p-3 rounded-xl ml-4 md:ml-0 group-hover:border-[#06B6D4]/30 transition-colors">
+                    <p className="text-sm text-gray-300">{activity.log}</p>
+                    <time className="text-xs text-gray-500 mt-1 block">{activity.time}</time>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </motion.div>
         </div>
 
       </div>
-    </div>
-  );
+    </motion.div>
+  
 }
 
-// Helper Components
-function StatCard({ title, value, trend, isPositive, highlight }: any) {
-  return (
-    <div className="glass-card p-6 relative overflow-hidden group">
-      {highlight && <div className="absolute top-0 right-0 w-16 h-16 bg-[#06B6D4]/20 blur-2xl rounded-full"></div>}
-      <p className="text-gray-400 text-sm font-medium mb-2">{title}</p>
-      <h4 className="text-3xl font-bold text-white mb-2">{value}</h4>
-      <p className={`text-xs ${isPositive ? 'text-emerald-400' : 'text-[#06B6D4]'}`}>
-        {trend}
-      </p>
-    </div>
-  );
+// 2. StatCard-এর প্রপস টাইপ ঠিক করা হয়েছে এবং itemVariants পাস করা হয়েছে
+interface StatCardProps {
+  title: string;
+  value: string;
+  icon: React.ReactNode;
+  trend: string;
+  color: "cyan" | "purple";
 }
 
-function ActivityRow({ action, subject, time }: any) {
+function StatCard({ title, value, icon, trend, color }: StatCardProps) {
+  const isCyan = color === "cyan";
+  
   return (
-    <div className="flex items-start gap-4 group cursor-default">
-      <div className="w-2 h-2 rounded-full bg-[#06B6D4]/50 mt-2 group-hover:bg-[#06B6D4] group-hover:shadow-[0_0_10px_#06B6D4] transition-all"></div>
+    <motion.div variants={itemVariants} className="glass-card p-6 relative overflow-hidden group">
+      {/* Glow Effect */}
+      <div className={`absolute -right-6 -top-6 w-24 h-24 rounded-full blur-2xl opacity-20 group-hover:opacity-40 transition-opacity duration-500 ${isCyan ? 'bg-[#06B6D4]' : 'bg-[#8B5CF6]'}`}></div>
+      
+      <div className="flex justify-between items-start mb-4">
+        <div className={`p-3 rounded-xl bg-white/5 ${isCyan ? 'text-[#06B6D4]' : 'text-[#8B5CF6]'}`}>
+          {icon}
+        </div>
+        <span className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-md bg-white/5 ${trend.startsWith('+') ? 'text-[#22C55E]' : 'text-[#EF4444]'}`}>
+          {trend} <ArrowUpRight className="w-3 h-3" />
+        </span>
+      </div>
+      
       <div>
-        <p className="text-sm text-gray-300">
-          {action} <span className="text-white font-medium">{subject}</span>
-        </p>
-        <p className="text-xs text-gray-500 mt-1">{time}</p>
+        <h3 className="text-3xl font-bold text-white mb-1">{value}</h3>
+        <p className="text-sm text-gray-400 font-medium">{title}</p>
       </div>
-    </div>
+    </motion.div>
   );
 }
